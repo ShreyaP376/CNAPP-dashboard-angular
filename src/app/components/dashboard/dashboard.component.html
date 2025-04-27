@@ -1,0 +1,103 @@
+<!-- Dashboard Header -->
+<div class="dashboard-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+    <div class="left-section">
+        <span class="dashboard-title fs-4 fw-bold">CNAPP Dashboard</span>
+    </div>
+
+    <div class="right-section d-flex gap-2 align-items-center">
+        <button class="btn add-widget" [ngClass]="{'btn-dark-blue': selectedButton === 'addWidget'}"
+            (click)="openSidePanel('')">
+            Add Widget&nbsp;&nbsp;&nbsp; +
+        </button>
+
+        <button class="btn btn-secondary refresh" [ngClass]="{'btn-dark-blue': selectedButton === 'refresh'}"
+            (click)="selectButton('refresh')">
+            <i class="bi bi-arrow-repeat"></i>
+        </button>
+
+        <button class="btn btn-secondary refresh" [ngClass]="{'btn-dark-blue': selectedButton === 'option'}"
+            (click)="selectButton('option')">
+            <i class="bi bi-three-dots-vertical"></i>
+        </button>
+
+        <div class="dropdown">
+            <button class="btn btn-info dropdown-toggle" [ngClass]="{'btn-dark-blue': selectedButton === 'dropdown'}"
+                (click)="selectButton('dropdown')" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="bi bi-clock-fill"></i> |&nbsp;
+                Last 2 Days&nbsp;
+                <i class="bi bi-chevron-down"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Categories and Widgets Section -->
+<div class="container mt-4 custom-left-space">
+    <div *ngFor="let category of filteredCategories" class="mb-4">
+        <h5 class="category-header">{{ category.name }}</h5>
+
+        <div class="widget-grid">
+            <div *ngFor="let widget of getSelectedWidgets(category)" class="white-card">
+                <strong>{{ widget.name }}</strong>
+                <p class="widget-text">{{ widget.text }}</p>
+            </div>
+
+            <div class="white-card add-widget-card">
+                <button class="btn add-widget card" [ngClass]="{'btn-dark-blue': selectedCategory === category.name}"
+                    (click)="openSidePanel(category.name)">
+                    +&nbsp;&nbsp;&nbsp; Add Widget
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="side-panel" [class.open]="isPanelOpen">
+
+    <div class="side-panel-header">
+        <h5>Add Widget</h5>
+        <button class="close-btn" (click)="closeSidePanel()">×</button>
+    </div>
+
+    <div class="side-panel-subheader">
+        Personalise your dashboard by adding the following widget
+    </div>
+
+    <div class="tabs">
+        <button *ngFor="let category of categories" class="tab-button" [class.active]="activeTab === category.name"
+            (click)="selectTab(category.name)">
+            {{ category.name }}
+        </button>
+    </div>
+
+    <div class="widget-list">
+        <div *ngFor="let widget of tempWidgetsForActiveTab">
+            <label class="widget-checkbox">
+                <input type="checkbox" [(ngModel)]="widget.selected" />
+                {{ widget.name }}
+            </label>
+        </div>
+        <div *ngIf = "!openForm">
+        <button (click)="addWidget()" class="btn add-widget card">
+            +&nbsp;&nbsp;&nbsp; Add Widget
+        </button>
+    </div>
+    <div *ngIf="openForm" class="widget-form">
+        <div class="form-group">
+          <label for="widgetName" >Widget Name:</label>
+          <input id="widgetName" name="WidgetName" type="text" class="form-control" [(ngModel)]="newWidName" />
+        </div>
+      
+        <div class="form-group">
+          <label for="widgetText">Widget Text:</label>
+          <input id="widgetText" name="WidgetText" type="text" class="form-control"  [(ngModel)]="newWidText" />
+        </div>
+      </div>
+      
+    </div>
+    <div class="side-panel-footer">
+        <button class="btn cancel-btn" (click)="closeSidePanel()">Cancel</button>
+        <button class="btn confirm-btn" (click)="confirmSelection()">Confirm</button>
+    </div>
+</div>
